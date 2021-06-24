@@ -39,6 +39,7 @@ function convertToCSVFile(file) {
         newList.push({
             listName: listName,
             title: card.name,
+            desc: card.desc,
             shortUrl: card.shortUrl,
             url: card.url,
             member: member,
