@@ -25,25 +25,31 @@ function writeToFile(file, newList) {
 function convertToCSVFile(file) {
     console.log('start to convertToCSVFile', file)
     const trelloJson = require(`./${INPUT_FOLDER_PATH}/${file}`);
+    var cards = trelloJson.cards;
     var lists = trelloJson.lists;
     var members = trelloJson.members;
+    var comments = trelloJson.actions.filter(a => a.type === "commentCard");
+    var maxComments = cards.reduce((acc,card) => card.badges.comments > acc ? card.badges.comments : 0, 0);
     const newList = [];
-    trelloJson.cards.forEach(card => {
+    cards.forEach(card => {
         const listName = _.find(lists, { id: card.idList }).name;
         let member = null;
         if (card.idMembers[0]) {
             member = _.find(members, { id: card.idMembers[0] }).fullName;
         }
-        cardName = card.name;
-        newList.push({
+        const cardData = {
             listName: listName,
             title: card.name,
             desc: card.desc,
             shortUrl: card.shortUrl,
             url: card.url,
             member: member,
-        });
-
+        }
+        const cardComments = comments.filter(c => c.data.card.id === card.id);
+        for (let i = 0; i < maxComments; i++) {
+			cardData['comment' + i.toString()] = cardComments[i] ? cardComments[i].data.text : '';
+		}
+        newList.push(cardData);
     });
     writeToFile(file, newList)
 }
