@@ -1,5 +1,4 @@
 const fastCSV = require('fast-csv');
-const _ = require('lodash');
 const fs = require('fs')
 
 const INPUT_FOLDER_PATH = './input-folder/';
@@ -32,10 +31,10 @@ function convertToCSVFile(file) {
     var maxComments = cards.reduce((acc,card) => card.badges.comments > acc ? card.badges.comments : 0, 0);
     const newList = [];
     cards.forEach(card => {
-        const listName = _.find(lists, { id: card.idList }).name;
+        const listName = lists.find(list => list.id === card.idList).name;
         let member = null;
         if (card.idMembers[0]) {
-            member = _.find(members, { id: card.idMembers[0] }).fullName;
+            member = members.find(member => member.id === card.idMembers[0]).fullName;
         }
         const cardData = {
             listName: listName,
